@@ -92,6 +92,18 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/banner',
+    component: Layout,
+    children: [
+      {
+        path: '/list',
+        name: 'List',
+        component: () => import('@/views/banner/index'),
+        meta: { title: '轮播图', icon: 'el-icon-picture-outline' }
+      }
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
