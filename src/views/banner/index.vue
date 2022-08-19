@@ -13,7 +13,12 @@
 
         <el-table-column label="图片" width="prop" prop="prop" align="center">
           <template slot-scope="{ row }">
-            <img :src="row.url" style="width: 180px" class="avatar">
+            <!-- <img :src="row.url" style="width: 180px" class="avatar"> -->
+            <el-image 
+              style="width: 180px;"
+              :src="row.url" 
+              :preview-src-list="[row.url]">
+            </el-image>
           </template>
         </el-table-column>
 
