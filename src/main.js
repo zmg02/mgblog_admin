@@ -40,7 +40,9 @@ import API from '@/api'
 Vue.prototype.$API = API;
 //全局组件
 import Pagination from '@/components/Pagination'
+import Tinymce from '@/components/Tinymce'
 Vue.component(Pagination.name, Pagination);
+Vue.component(Tinymce.name, Tinymce);
 
 new Vue({
   el: '#app',
