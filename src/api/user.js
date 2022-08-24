@@ -19,11 +19,11 @@ export const reqPutUser = (userId, data) => request({ url: `/admin/v1/users/${us
 // 删除用户
 export const reqDelUser = (userId) => request({ url: `/admin/v1/users/${userId}`, method: 'delete' });
 // 验证用户
-export const reqVerify = (data) => request({ url: '/admin/v1/users/verify', data, method: 'patch' });
+export const reqVerify = (data) => request({ url: '/admin/v1/user/verify', data, method: 'patch' });
 // 拉黑用户
-export const reqBlacklist = (data) => request({ url: '/admin/v1/users/blacklist', data, method: 'patch' });
-// 删除用户
-export const reqDestroy = (data) => request({ url: '/admin/v1/users/destroy_selected', data, method: 'patch' });
+export const reqBlacklist = (data) => request({ url: '/admin/v1/user/blacklist', data, method: 'patch' });
+// 删除用户(批量)
+export const reqDestroy = (data) => request({ url: '/admin/v1/user/destroy_selected', data, method: 'patch' });
 // 上传头像
 export const reqUpload = (data) => request({ url: '/admin/v1/users/upload', data, method: 'post' });
 
