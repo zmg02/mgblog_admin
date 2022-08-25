@@ -41,8 +41,15 @@
 
           <el-table-column prop="prop" label="操作" align="center" width="260">
             <template slot-scope="{ row }">
-              <el-button type="warning" icon="el-icon-edit" @click="edit(row)">修改</el-button>
-              <el-button type="danger" icon="el-icon-delete" @click="remove(row)">删除</el-button>
+              <el-button type="warning" icon="el-icon-edit" @click="edit(row)"
+                >修改</el-button
+              >
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                @click="remove(row)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -51,14 +58,22 @@
 
     <div class="create_article">
       <el-dialog
-        :title="newCategory.id ? '修改分类' : '创建分类'"
+        :title="categoryInfo.id ? '修改分类' : '创建分类'"
         :visible.sync="createDialogVisible"
+        @close='close'
         width="30%"
       >
-        <el-form :model="newCategory" class="create">
-          <el-form-item label="名称" :label-width="formLabelWidth">
+        <!-- v-if="createDialogVisible"
+        destroy-on-close -->
+        <el-form
+          :model="categoryInfo"
+          class="create"
+          :rules="rules"
+          ref="ruleForm"
+        >
+          <el-form-item label="名称" :label-width="formLabelWidth" prop="name">
             <el-input
-              v-model="newCategory.name"
+              v-model="categoryInfo.name"
               autocomplete="off"
               placeholder="请输入名称"
               autofocus="true"
@@ -66,7 +81,7 @@
           </el-form-item>
 
           <el-form-item label="状态" :label-width="formLabelWidth">
-            <el-select v-model="newCategory.status" placeholder="请选择状态">
+            <el-select v-model="categoryInfo.status" placeholder="请选择状态">
               <el-option
                 :label="value"
                 :value="index"
@@ -78,7 +93,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="cancel">取 消</el-button>
+          <el-button @click="close">取 消</el-button>
           <el-button type="primary" @click="save">确 定</el-button>
         </div>
       </el-dialog>
@@ -91,11 +106,22 @@ export default {
   data() {
     return {
       categoryList: [],
-
       createDialogVisible: false,
       formLabelWidth: "120px",
-      newCategory: {},
+      categoryInfo: {},
       status: ["删除", "正常"],
+      // validate
+      rules: {
+        name: [
+          { required: true, message: "请输入分类名称", trigger: "blur" },
+          {
+            min: 2,
+            max: 100,
+            message: "长度在 2 到 100 个字符",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   methods: {
@@ -118,31 +144,49 @@ export default {
     create() {
       this.createDialogVisible = true;
     },
-    async save() {
-      let message = '', result = {};
-      if (this.newCategory.id) {
-        result = await this.$API.article.reqPutArticleCategory(this.newCategory.id, this.newCategory);
-        message = '修改成功'
-      } else {
-        result = await this.$API.article.reqPostArticleCategory(this.newCategory);
-        message = '创建成功'
-      }
-      
-      if (result.code == 200) {
-        this.createDialogVisible = false;
-        this.getData();
-        this.$message({
-          type: 'success',
-          message
-        })
-      }
+    save() {
+      this.$refs.ruleForm.validate(async (valid) => {
+        if (valid) {
+          let message = "",
+            result = {};
+          if (this.categoryInfo.id) {
+            result = await this.$API.article.reqPutArticleCategory(
+              this.categoryInfo.id,
+              this.categoryInfo
+            );
+            message = "修改成功";
+          } else {
+            result = await this.$API.article.reqPostArticleCategory(
+              this.categoryInfo
+            );
+            message = "创建成功";
+          }
+
+          if (result.code == 200) {
+            this.createDialogVisible = false;
+            this.getData();
+            this.categoryInfo = {};
+            this.$message({
+              type: "success",
+              message,
+            });
+          }
+        } else {
+          this.$message({
+            type: 'error',
+            message: '提交错误!!'
+          });
+        }
+      });
     },
-    cancel() {
+    close() {
       this.createDialogVisible = false;
-      this.newCategory = {}
+      this.categoryInfo = {};
+      this.$refs["ruleForm"].resetFields();//重置表单
+      // this.$refs.ruleForm.clearValidate(); //清除验证规则
     },
     edit(row) {
-      this.newCategory = {...row}
+      this.categoryInfo = { ...row };
       this.createDialogVisible = true;
     },
     async remove(row) {
@@ -150,11 +194,11 @@ export default {
       if (result.code == 200) {
         this.getData();
         this.$message({
-          type: 'success',
-          message: '删除成功'
-        })
+          type: "success",
+          message: "删除成功",
+        });
       }
-    }
+    },
   },
   mounted() {
     this.getData();
@@ -173,10 +217,10 @@ export default {
 .create {
   .el-form-item {
     .el-input {
-      width: 400px;
+      width: 80%;
     }
     .el-select {
-      width: 400px;
+      width: 80%;
     }
   }
 }

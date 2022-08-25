@@ -13,3 +13,18 @@ export function setToken(token) {
 export function removeToken() {
   return Cookies.remove(TokenKey)
 }
+
+// 将expiresAt过期时间写入cookie
+const expiresAtKey = 'ExpiresAt'
+
+export function getExpires() {
+    return Cookies.get(expiresAtKey)
+}
+
+export function setExpires(expiresAt, expires) {
+    return Cookies.set(expiresAtKey, expiresAt, { expires: expires })
+}
+
+export function removeExpires() {
+    return Cookies.remove(expiresAtKey)
+}

@@ -1,7 +1,21 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getToken, getExpires } from '@/utils/auth'
+
+// 是否正在刷新的标志
+window.isRefreshing = false;
+// 判断token是否即将过期
+function isTokenExpired() {
+  let curTime = new Date().getTime();
+  let expiresTime = Number(getExpires()) - curTime;
+  let minutesTime = new Date(expiresTime).getMinutes();
+
+  if ((expiresTime >= 0 && minutesTime < 60)) {
+    return true;
+  }
+  return false;
+}
 
 // create an axios instance
 const service = axios.create({
@@ -16,7 +30,7 @@ const service = axios.create({
 
 // request interceptor
 service.interceptors.request.use(
-  config => {
+  async (config) => {
     // do something before request is sent
 
     if (store.getters.token) {
@@ -25,6 +39,27 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       // config.headers['token'] = getToken()
       config.headers['Authorization'] = 'Bearer ' + getToken()
+
+      // 判断token是否即将过期，且不是请求刷新token的接口
+      if (isTokenExpired() && config.url !== '/admin/v1/refresh') {
+        if (!window.isRefreshing) {
+          window.isRefreshing = true;
+          let result = await store.dispatch('user/refreshToken');
+          if (result == 'success') {
+            window.isRefreshing = false;
+
+            let retry = new Promise((resolve) => {
+              config.headers['Authorization'] = 'Bearer ' + getToken(); // token为刷新完成后传入的token
+              // 将请求挂起
+              resolve(config)
+            })
+            return retry;
+          } else {
+            console.log(result) // for debug
+            return Promise.reject(result)
+          }
+        }
+      }
     }
     return config
   },

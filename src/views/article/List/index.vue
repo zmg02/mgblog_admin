@@ -188,8 +188,8 @@
       </el-card>
 
       <el-card>
-        <el-form :model="articleInfo">
-          <el-form-item label="标题" :label-width="formLabelWidth">
+        <el-form :model="articleInfo" :rules="rules" ref="ruleEditForm">
+          <el-form-item label="标题" :label-width="formLabelWidth" prop="title">
             <el-input
               v-model="articleInfo.title"
               autocomplete="off"
@@ -201,7 +201,11 @@
             <span>{{ articleInfo.user.name }}</span>
           </el-form-item>
 
-          <el-form-item label="主图" :label-width="formLabelWidth">
+          <el-form-item
+            label="主图"
+            :label-width="formLabelWidth"
+            prop="default_img"
+          >
             <el-upload
               class="avatar-uploader"
               action="/dev-api/admin/v1/articles/upload"
@@ -221,11 +225,19 @@
             </el-upload>
           </el-form-item>
 
-          <el-form-item label="内容" :label-width="formLabelWidth">
+          <el-form-item
+            label="内容"
+            :label-width="formLabelWidth"
+            prop="content"
+          >
             <Tinymce v-model="articleInfo.content"></Tinymce>
           </el-form-item>
 
-          <el-form-item label="分类" :label-width="formLabelWidth">
+          <el-form-item
+            label="分类"
+            :label-width="formLabelWidth"
+            prop="category_id"
+          >
             <el-select v-model="articleInfo.category_id" placeholder="请选择">
               <el-option
                 :label="value.name"
@@ -236,7 +248,11 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="状态" :label-width="formLabelWidth">
+          <el-form-item
+            label="状态"
+            :label-width="formLabelWidth"
+            prop="status"
+          >
             <el-select v-model="articleInfo.status" placeholder="请选择">
               <el-option
                 :label="value"
@@ -289,8 +305,8 @@
       </el-card>
 
       <el-card>
-        <el-form :model="newArticle">
-          <el-form-item label="标题" :label-width="formLabelWidth">
+        <el-form :model="newArticle" :rules="rules" ref="ruleNewForm">
+          <el-form-item label="标题" :label-width="formLabelWidth" prop="title">
             <el-input
               v-model="newArticle.title"
               autocomplete="off"
@@ -298,7 +314,11 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item label="作者" :label-width="formLabelWidth">
+          <el-form-item
+            label="作者"
+            :label-width="formLabelWidth"
+            prop="user_id"
+          >
             <el-select v-model="newArticle.user_id" placeholder="请选择">
               <el-option
                 :label="value.name"
@@ -309,7 +329,11 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="主图" :label-width="formLabelWidth">
+          <el-form-item
+            label="主图"
+            :label-width="formLabelWidth"
+            prop="default_img"
+          >
             <el-upload
               class="avatar-uploader"
               action="/dev-api/admin/v1/articles/upload"
@@ -329,11 +353,19 @@
             </el-upload>
           </el-form-item>
 
-          <el-form-item label="内容" :label-width="formLabelWidth">
+          <el-form-item
+            label="内容"
+            :label-width="formLabelWidth"
+            prop="content"
+          >
             <Tinymce v-model="newArticle.content"></Tinymce>
           </el-form-item>
 
-          <el-form-item label="分类" :label-width="formLabelWidth">
+          <el-form-item
+            label="分类"
+            :label-width="formLabelWidth"
+            prop="category_id"
+          >
             <el-select v-model="newArticle.category_id" placeholder="请选择">
               <el-option
                 :label="value.name"
@@ -344,7 +376,11 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="状态" :label-width="formLabelWidth">
+          <el-form-item
+            label="状态"
+            :label-width="formLabelWidth"
+            prop="status"
+          >
             <el-select v-model="newArticle.status" placeholder="请选择">
               <el-option
                 :label="value"
@@ -364,7 +400,9 @@
           </el-form-item>
 
           <el-form-item label="" :label-width="formLabelWidth">
-            <el-button type="primary" @click="saveCreateArticle">保存</el-button>
+            <el-button type="primary" @click="saveCreateArticle"
+              >保存</el-button
+            >
           </el-form-item>
         </el-form>
       </el-card>
@@ -404,6 +442,30 @@ export default {
         category_id: "",
         status: 1,
         order: 0,
+      },
+      // validate
+      rules: {
+        title: [
+          { required: true, message: "请输入文章标题", trigger: "blur" },
+          {
+            min: 2,
+            max: 255,
+            message: "长度在 2 到 255 个字符",
+            trigger: "blur",
+          },
+        ],
+        user_id: [{ required: true, message: "请选择作者", trigger: "change" }],
+        default_img: [
+          { required: true, message: "请上传文章主图", trigger: "change" },
+        ],
+        content: [
+          { required: true, message: "请输入文章内容", trigger: "blur" },
+          { min: 20, message: "长度大于 20 个字符", trigger: "blur" },
+        ],
+        category_id: [
+          { required: true, message: "请选择分类", trigger: "change" },
+        ],
+        status: [{ required: true, message: "请选择状态", trigger: "change" }],
       },
     };
   },
@@ -518,35 +580,51 @@ export default {
       this.getAuthors();
     },
     // 保存修改文章
-    async saveEditArticle() {
-      let result = await this.$API.article.reqPutArticle(
-        this.articleInfo.id,
-        this.articleInfo
-      );
-      if (result.code == 200) {
-        this.articleInfo = {};
-        this.showType = "table";
-        this.$message({
-          type: "success",
-          message: "修改成功",
-        });
-        this.getData();
-      }
+    saveEditArticle() {
+      this.$refs.ruleEditForm.validate(async (valid) => {
+        if (valid) {
+          let result = await this.$API.article.reqPutArticle(
+            this.articleInfo.id,
+            this.articleInfo
+          );
+          if (result.code == 200) {
+            this.articleInfo = {};
+            this.showType = "table";
+            this.$message({
+              type: "success",
+              message: "修改成功",
+            });
+            this.getData();
+          }
+        } else {
+          this.$message({
+            type: "error",
+            message: "提交错误!!",
+          });
+        }
+      });
     },
     // 保存创建文章
     async saveCreateArticle() {
-      let result = await this.$API.article.reqPostArticle(
-        this.newArticle
-      );
-      if (result.code == 200) {
-        this.newArticle = {};
-        this.showType = "table";
-        this.$message({
-          type: "success",
-          message: "修改成功",
-        });
-        this.getData();
-      }
+      this.$refs.ruleNewForm.validate(async (valid) => {
+        if (valid) {
+          let result = await this.$API.article.reqPostArticle(this.newArticle);
+          if (result.code == 200) {
+            this.newArticle = {};
+            this.showType = "table";
+            this.$message({
+              type: "success",
+              message: "修改成功",
+            });
+            this.getData();
+          }
+        } else {
+          this.$message({
+            type: "error",
+            message: "提交错误!!",
+          });
+        }
+      });
     },
   },
   mounted() {
