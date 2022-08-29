@@ -8,9 +8,7 @@
           <el-card>
             <el-row>
               <el-col :span="12">新增用户</el-col>
-              <el-col :span="12" style="text-align: right"
-                ><span class="el-icon-info"></span
-              ></el-col>
+              <el-col :span="12" style="text-align: right"><span class="el-icon-info"></span></el-col>
             </el-row>
 
             <LineChart />
@@ -23,9 +21,7 @@
             <el-card>
               <el-row>
                 <el-col :span="12">新增用户</el-col>
-                <el-col :span="12" style="text-align: right"
-                  ><span class="el-icon-info"></span
-                ></el-col>
+                <el-col :span="12" style="text-align: right"><span class="el-icon-info"></span></el-col>
               </el-row>
 
               <LineChart />
@@ -39,9 +35,7 @@
             <el-card>
               <el-row>
                 <el-col :span="12">新增用户</el-col>
-                <el-col :span="12" style="text-align: right"
-                  ><span class="el-icon-info"></span
-                ></el-col>
+                <el-col :span="12" style="text-align: right"><span class="el-icon-info"></span></el-col>
               </el-row>
 
               <LineChart />
@@ -60,7 +54,7 @@
                 ></el-col>
               </el-row> -->
 
-              <GaugeClock />
+              <!-- <GaugeClock /> -->
 
               <!-- <div>用户总数：50001</div> -->
             </el-card>
@@ -70,7 +64,7 @@
     </div>
 
     <div>
-                    <GaugeClock />
+      <GaugeClock />
     </div>
 
     <div class="content">

@@ -41,6 +41,10 @@ Vue.prototype.$API = API;
 //全局组件
 import Pagination from '@/components/Pagination'
 Vue.component(Pagination.name, Pagination);
+import 'echarts'
+import ECharts from 'vue-echarts'
+// 全局注册组件（也可以使用局部注册）
+Vue.component('ECharts', ECharts)
 
 new Vue({
   el: '#app',
