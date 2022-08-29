@@ -134,7 +134,10 @@ export default {
       try {
         await this.$store.dispatch("user/getUserStatus");
       } catch (error) {
-        alert(error);
+        this.$message({
+            type: 'error',
+            message: error
+          });
       }
     },
     // upload

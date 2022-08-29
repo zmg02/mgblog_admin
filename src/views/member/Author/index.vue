@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card style="margin-bottom: 20px">
+    <el-card class="card">
       <Search @formSearch="formSearch" />
     </el-card>
 
@@ -58,7 +58,11 @@
 
           <el-table-column label="是否验证" width="100" prop="prop">
             <template slot-scope="{ row, $index }">
-              <span v-if="row.email_verified_time != '1970-01-01 08:00:00'" class="normal">已验证</span>
+              <span
+                v-if="row.email_verified_time != '1970-01-01 08:00:00'"
+                class="normal"
+                >已验证</span
+              >
               <span v-else class="abnormal">未验证</span>
             </template>
           </el-table-column>
@@ -177,10 +181,16 @@ export default {
         if (result.code == 200) {
           this.userList = result.data;
         } else {
-          alert(result.message);
+          this.$message({
+            type: "error",
+            message: result.message,
+          });
         }
       } catch (error) {
-        alert(error);
+        this.$message({
+          type: "error",
+          message: error,
+        });
       }
     },
     // 选择
@@ -264,7 +274,7 @@ export default {
         });
         return;
       }
-      
+
       let result = await this.$API.user.reqBlacklist({
         data: this.multipleSelection,
       });
@@ -295,7 +305,7 @@ export default {
         });
         this.getData();
       }
-    }
+    },
   },
   mounted() {
     this.getData();
@@ -306,15 +316,6 @@ export default {
 <style scoped>
 .avatar {
   border-radius: 50%;
-}
-.delete {
-  color: #f56c6c;
-}
-.normal {
-  color: #67c23a;
-}
-.abnormal {
-  color: #e6a23c;
 }
 /* 按钮组 */
 .button-group {

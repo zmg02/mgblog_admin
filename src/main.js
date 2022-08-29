@@ -40,11 +40,16 @@ import API from '@/api'
 Vue.prototype.$API = API;
 //全局组件
 import Pagination from '@/components/Pagination'
+import Tinymce from '@/components/Tinymce'
 Vue.component(Pagination.name, Pagination);
+<<<<<<< HEAD
 import 'echarts'
 import ECharts from 'vue-echarts'
 // 全局注册组件（也可以使用局部注册）
 Vue.component('ECharts', ECharts)
+=======
+Vue.component(Tinymce.name, Tinymce);
+>>>>>>> d17a5dcf3fc877ca4f055a0f0a8cb2533bdc75e6
 
 new Vue({
   el: '#app',
