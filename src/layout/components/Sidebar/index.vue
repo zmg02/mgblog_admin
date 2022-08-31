@@ -12,14 +12,15 @@
         :collapse-transition="false"
         mode="vertical"
       >
-        <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
+        <!-- <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" /> -->
+        <sidebar-item v-for="route in sidebarMenu" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
@@ -30,6 +31,7 @@ export default {
     ...mapGetters([
       'sidebar'
     ]),
+    ...mapState('permission', ['sidebarMenu', 'currentMenu']),
     routes() {
       return this.$router.options.routes
     },

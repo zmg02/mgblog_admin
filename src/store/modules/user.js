@@ -74,6 +74,7 @@ const actions = {
       removeToken() // must remove  token  first
       resetRouter()
       commit('RESET_STATE')
+      location.reload()
       // resolve()
       return 'success';
     } else {

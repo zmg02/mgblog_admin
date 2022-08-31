@@ -35,92 +35,50 @@ export const constantRoutes = [
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
-  },
+  }
+]
+
+// 动态路由
+export const dynamicRoutes = [
   {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
+    path: '',
+    redirect: '/dashboard',
   },
   {
     path: '/',
     component: Layout,
+    name: 'dashboard',
     redirect: '/dashboard',
+    meta: {
+      // 匹配后端路由权限
+      uri: '/dashboard'
+    },
     children: [
       {
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: '指示板', icon: 'dashboard' }
-      }
-    ]
-  },
-  {
-    path: '/member',
-    component: Layout,
-    name: 'Member',
-    meta: { title: '成员管理', icon: 'el-icon-user' },
-    children: [
-      {
-        path: 'user',
-        name: 'User',
-        component: () => import('@/views/member/User'),
-        meta: { title: '用户' }
-      },
-      {
-        path: 'author',
-        name: 'Author',
-        component: () => import('@/views/member/Author'),
-        meta: { title: '作者' }
-      },
-      {
-        path: 'admin',
-        name: 'Admin',
-        component: () => import('@/views/member/Admin'),
-        meta: { title: '管理员' }
-      },
-    ]
-  },
-  {
-    path: '/article',
-    component: Layout,
-    name: 'Article',
-    meta: { title: '文章管理', icon: 'el-icon-postcard' },
-    children: [
-      {
-        path: 'list',
-        name: 'List',
-        component: () => import('@/views/article/List'),
-        meta: { title: '文章' }
-      },
-      {
-        path: 'category',
-        name: 'Category',
-        component: () => import('@/views/article/Category'),
-        meta: { title: '文章分类' }
-      },
-    ]
-  },
-  {
-    path: '/test',
-    component: Layout,
-    children: [
-      {
-        path: 'test',
-        name: 'Test',
-        component: () => import('@/views/test/index'),
-        meta: { title: '测试', icon: 'el-icon-question' }
+        meta: { title: '指示板', icon: 'dashboard', uri: '/dashboard' }
       }
     ]
   },
 
+  {
+    path: '/404',
+    component: () => import('@/views/404'),
+    hidden: true
+  },
+
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true },
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  routes: constantRoutes,
+  // mode: 'history',
+  // base: process.env.BASE_URL
 })
 
 const router = createRouter()

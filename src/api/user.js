@@ -2,6 +2,10 @@ import request from '@/utils/request'
 
 // 后台用户登录
 export const reqLogin = (data) => request({ url: '/admin/v1/login', data, method: 'post' });
+// 后台所有菜单
+export const fetchMenu = () => request({ url: '/admin/v1/menu', method: 'get' });
+// 登录用户的权限
+export const fetchPermission = () => request({ url: '/admin/v1/permission', method: 'get' });
 // 获取后台登录用户信息
 export const reqGetInfo = () => request({ url: '/admin/v1/me', method: 'post' });
 // 退出登录
