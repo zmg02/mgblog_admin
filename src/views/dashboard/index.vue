@@ -13,16 +13,7 @@ export default {
     ...mapGetters([
       'name'
     ])
-  },
-  methods: {
-    async refreshToken() {
-      let result = await this.$store.dispatch('user/refreshToken');
-      console.log(result)
-    }
-  },
-  mounted() {
-    this.refreshToken();
-  },
+  }
 }
 </script>
 
