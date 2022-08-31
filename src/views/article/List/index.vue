@@ -62,12 +62,12 @@
             tooltip-effect="dark"
             @selection-change="handleSelectionChange"
           >
-            <el-table-column type="selection" width="50" prop="prop">
+            <el-table-column type="selection" width="45" prop="prop">
             </el-table-column>
 
             <el-table-column
               label="主图"
-              width="100"
+              width="88"
               prop="prop"
               align="center"
             >
@@ -89,17 +89,17 @@
             <el-table-column
               label="作者"
               prop="user.name"
-              width="200"
-            ></el-table-column>
-
-            <el-table-column
-              label="标题"
-              prop="title"
               width="width"
             ></el-table-column>
 
-            <el-table-column label="内容" prop="prop" width="500">
-              <template slot-scope="{ row, $index }">
+            <el-table-column label="标题" prop="prop" width="150">
+              <template slot-scope="{ row }">
+                <p class="content">{{ row.title }}</p>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="内容" prop="prop" width="200">
+              <template slot-scope="{ row }">
                 <p class="content">{{ row.content }}</p>
               </template>
             </el-table-column>
@@ -110,14 +110,14 @@
               width="width"
             ></el-table-column>
 
-            <el-table-column label="状态" prop="prop" width="100">
+            <el-table-column label="状态" prop="prop" width="width">
               <template slot-scope="{ row }">
                 <span v-if="row.status == 1" class="normal">正常</span>
                 <span v-else class="delete">已删除</span>
               </template>
             </el-table-column>
 
-            <el-table-column label="评论" prop="prop" width="100">
+            <el-table-column label="评论" prop="prop" width="width">
               <template slot-scope="{ row }">
                 <a href="" v-if="row.comment_count > 0">{{
                   row.comment_count
@@ -126,7 +126,7 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="点赞" prop="praise_count" width="100">
+            <el-table-column label="点赞" prop="praise_count" width="width">
             </el-table-column>
 
             <el-table-column label="创建时间" prop="create_time" width="150">
