@@ -21,26 +21,33 @@ router.beforeEach(async(to, from, next) => {
   const hasToken = getToken()
 
   if (hasToken) {
-    if (to.path === '/login') {
-      // if is logged in, redirect to the home page
-      next({ path: '/' })
-      NProgress.done()
+    // 已登录 获取权限
+    if (!store.state.permission.permissionList) {
+      await store.dispatch("permission/fetchPermissions");
+      next({ path: to.path })
     } else {
-      const hasGetUserInfo = store.getters.name
-      if (hasGetUserInfo) {
-        next()
+      // store存在权限
+      if (to.path === '/login') {
+        // if is logged in, redirect to the home page
+        next({ path: '/' })
+        NProgress.done()
       } else {
-        try {
-          // get user info
-          await store.dispatch('user/getInfo')
-
+        const hasGetUserInfo = store.getters.name
+        if (hasGetUserInfo) {
           next()
-        } catch (error) {
-          // remove token and go to login page to re-login
-          await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
-          next(`/login?redirect=${to.path}`)
-          NProgress.done()
+        } else {
+          try {
+            // get user info
+            await store.dispatch('user/getInfo')
+  
+            next()
+          } catch (error) {
+            // remove token and go to login page to re-login
+            await store.dispatch('user/resetToken')
+            Message.error(error || 'Has Error')
+            next(`/login?redirect=${to.path}`)
+            NProgress.done()
+          }
         }
       }
     }
