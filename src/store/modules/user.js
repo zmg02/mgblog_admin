@@ -1,5 +1,5 @@
-import { reqLogin, reqLogout, reqGetInfo, reqUserStatus } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { reqLogin, reqLogout, reqGetInfo, reqUserStatus, reqRefreshToken } from '@/api/user'
+import { getToken, setToken, removeToken, setExpires } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
@@ -41,6 +41,8 @@ const actions = {
     if (result.code == 200) {
       commit('SET_TOKEN', result.data.original.access_token);
       setToken(result.data.original.access_token);
+      let expiresTime = new Date().getTime() + result.data.original.expires_in;
+      setExpires(expiresTime);
       // resolve()
       return 'success';
     } else {
@@ -74,10 +76,25 @@ const actions = {
       removeToken() // must remove  token  first
       resetRouter()
       commit('RESET_STATE')
+      location.reload()
       // resolve()
       return 'success';
     } else {
       reject(new Error(result.message))
+    }
+  },
+
+  // 刷新token
+  async refreshToken( {commit} ) {
+    let result = await reqRefreshToken();
+    if (result.code == 200) {
+      commit('SET_TOKEN', result.data.original.access_token);
+      setToken(result.data.original.access_token);
+      let expiresTime = new Date().getTime() + result.data.original.expires_in;
+      setExpires(expiresTime);
+      return 'success';
+    } else {
+      return Promise.reject(new Error(result.message));
     }
   },
 

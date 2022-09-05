@@ -1,9 +1,13 @@
 <template>
   <div>
     <el-dialog title="修改用户信息" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off" placeholder="请输入名称"></el-input>
+      <el-form :model="form" :rules="rules" ref="ruleForm">
+        <el-form-item label="名称" :label-width="formLabelWidth" prop="name">
+          <el-input
+            v-model="form.name"
+            autocomplete="off"
+            placeholder="请输入名称"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label="头像" :label-width="formLabelWidth" prop="avatar">
@@ -56,7 +60,7 @@
           <el-radio v-model="form.is_author" :label="0">否</el-radio>
         </el-form-item>
 
-        <el-form-item label="状态" :label-width="formLabelWidth">
+        <el-form-item label="状态" :label-width="formLabelWidth" prop="status">
           <el-select v-model="form.status" placeholder="请选择用户状态">
             <el-option
               :label="value"
@@ -70,9 +74,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="edit"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="edit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -122,7 +124,24 @@ export default {
             },
           },
         ],
-      }
+      },
+      // validate
+      rules: {
+        name: [
+          { required: true, message: "请输入用户名称", trigger: "blur" },
+          { max: 100, message: "长度在 100 个字符以内", trigger: "blur" },
+        ],
+        avatar: [
+          { required: true, message: "请上传用户头像", trigger: "change" },
+        ],
+        status: [
+          {
+            required: true,
+            message: "请至少选择一个用户状态",
+            trigger: "change",
+          },
+        ],
+      },
     };
   },
   computed: {
@@ -135,9 +154,9 @@ export default {
         await this.$store.dispatch("user/getUserStatus");
       } catch (error) {
         this.$message({
-            type: 'error',
-            message: error
-          });
+          type: "error",
+          message: error,
+        });
       }
     },
     // upload
@@ -157,14 +176,24 @@ export default {
       return isJPG && isLt2M;
     },
     // edit
-    async edit() {
-        this.form.email_verified_time = Date.parse(this.form.email_verified_time) / 1000;
-        let result = await this.$API.user.reqPutUser(this.userId, this.form);
-        if (result.code == 200) {
-            this.$emit('editOk');
+    edit() {
+      this.$refs.ruleForm.validate(async (valid) => {
+        if (valid) {
+          this.form.email_verified_time =
+            Date.parse(this.form.email_verified_time) / 1000;
+          let result = await this.$API.user.reqPutUser(this.userId, this.form);
+          if (result.code == 200) {
+            this.$emit("editOk");
+          }
+          this.dialogFormVisible = false;
+        } else {
+          this.$message({
+            type: 'error',
+            message: 'error submit!!'
+          })
         }
-        this.dialogFormVisible = false;
-    }
+      });
+    },
   },
   mounted() {
     this.$bus.$on("showUserUpdate", (userInfo) => {
