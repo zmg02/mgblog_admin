@@ -41,8 +41,10 @@ Vue.prototype.$API = API;
 //全局组件
 import Pagination from '@/components/Pagination'
 import Tinymce from '@/components/Tinymce'
+import SelectTree from '@/components/SelectTree'
 Vue.component(Pagination.name, Pagination);
 Vue.component(Tinymce.name, Tinymce);
+Vue.component(SelectTree.name, SelectTree);
 
 new Vue({
   el: '#app',

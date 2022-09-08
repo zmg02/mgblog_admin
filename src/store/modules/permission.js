@@ -1,4 +1,4 @@
-import { fetchMenu, fetchPermission } from "@/api/user";
+import { fetchMenu, reqGetPermissions } from "@/api/user";
 import router, { dynamicRoutes } from "@/router"
 import map from '@/router/map-routes'
 import { recursionRoutes, setDefaultRoute, mapRoutes } from "@/utils/recursion-route";
@@ -27,13 +27,13 @@ export default {
     actions: {
         async fetchPermissions({ commit }) {
             // 获取登录用户权限
-            let result = await fetchPermission();
+            let result = await reqGetPermissions();
             let userPermission = [];
             if (result.code == 200) {
                 userPermission = result.data;
             }
             // 获取所有菜单
-            let resultMenu = await fetchMenu();
+            let resultMenu = await fetchMenu({'status': 1});
             let serviceRoutes = [];
             if (resultMenu.code == 200) {
                 serviceRoutes = resultMenu.data;

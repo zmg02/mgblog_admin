@@ -40,9 +40,11 @@ const actions = {
     let result = await reqLogin({ name: username.trim(), password: password });
     if (result.code == 200) {
       commit('SET_TOKEN', result.data.original.access_token);
-      setToken(result.data.original.access_token);
-      let expiresTime = new Date().getTime() + result.data.original.expires_in;
-      setExpires(expiresTime);
+      let seconds = result.data.original.expires_in;
+      let expires = new Date(new Date() * 1 + seconds * 1000);
+      setToken(result.data.original.access_token, expires);
+      let expiresTime = Math.ceil(new Date().getTime() / 1000) + result.data.original.expires_in;
+      setExpires(expiresTime, expires);
       // resolve()
       return 'success';
     } else {
@@ -89,9 +91,11 @@ const actions = {
     let result = await reqRefreshToken();
     if (result.code == 200) {
       commit('SET_TOKEN', result.data.original.access_token);
-      setToken(result.data.original.access_token);
-      let expiresTime = new Date().getTime() + result.data.original.expires_in;
-      setExpires(expiresTime);
+      let seconds = result.data.original.expires_in;
+      let expires = new Date(new Date() * 1 + seconds * 1000);
+      setToken(result.data.original.access_token, expires);
+      let expiresTime = Math.ceil(new Date().getTime() / 1000) + result.data.original.expires_in;
+      setExpires(expiresTime, expires);
       return 'success';
     } else {
       return Promise.reject(new Error(result.message));

@@ -1,13 +1,13 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'vue_admin_template_token'
+const TokenKey = 'mgblog_admin_token'
 
 export function getToken() {
   return Cookies.get(TokenKey)
 }
 
-export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+export function setToken(token, expires) {
+  return Cookies.set(TokenKey, token, { expires: expires})
 }
 
 export function removeToken() {
@@ -15,7 +15,7 @@ export function removeToken() {
 }
 
 // 将expiresAt过期时间写入cookie
-const expiresAtKey = 'ExpiresAt'
+const expiresAtKey = 'mgblog_admin_expires_at'
 
 export function getExpires() {
     return Cookies.get(expiresAtKey)

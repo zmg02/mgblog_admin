@@ -427,7 +427,7 @@ export default {
       status: ["已删除", "正常"],
       categories: [],
       authors: [],
-      articleList: [],
+      articleList: {},
       // 选中内容
       multipleSelection: [],
       // 显示内容

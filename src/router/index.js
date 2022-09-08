@@ -58,7 +58,7 @@ export const dynamicRoutes = [
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: '指示板', icon: 'dashboard', uri: '/dashboard' }
+        meta: { title: '首页', icon: 'dashboard', uri: '/dashboard' }
       }
     ]
   },

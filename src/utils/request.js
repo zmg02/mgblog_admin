@@ -7,11 +7,12 @@ import { getToken, getExpires } from '@/utils/auth'
 window.isRefreshing = false;
 // 判断token是否即将过期
 function isTokenExpired() {
-  let curTime = new Date().getTime();
-  let expiresTime = Number(getExpires()) - curTime;
-  let minutesTime = new Date(expiresTime).getMinutes();
+  let curTime = Math.ceil(new Date().getTime() / 1000);
+  let seconds = Number(getExpires());
 
-  if ((expiresTime >= 0 && minutesTime < 60)) {
+  let expiresTime = Number(getExpires()) - curTime;
+
+  if (seconds> 0 && (expiresTime >= 0 && expiresTime < 1800)) {
     return true;
   }
   return false;
@@ -47,7 +48,6 @@ service.interceptors.request.use(
           let result = await store.dispatch('user/refreshToken');
           if (result == 'success') {
             window.isRefreshing = false;
-
             let retry = new Promise((resolve) => {
               config.headers['Authorization'] = 'Bearer ' + getToken(); // token为刷新完成后传入的token
               // 将请求挂起
