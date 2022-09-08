@@ -7,15 +7,12 @@ const mapRoutes = {
     admin:() => import('@/views/member/Admin'),
     article:() => import('@/views/article/List'),
     category:() => import('@/views/article/Category'),
-    test1:() => import('@/views/test/test1'),
-    test1_1:() => import('@/views/test/test1/test1-1'),
-    test1_1_1:() => import('@/views/test/test1/test1-1/test1-1-1'),
-    test1_1_2:() => import('@/views/test/test1/test1-1/test1-1-2'),
-    test1_1_3:() => import('@/views/test/test1/test1-1/test1-1-3'),
-    test1_2:() => import('@/views/test/test1/test1-2'),
-    test2:() => import('@/views/test/test2'),
-    test2_1:() => import('@/views/test/test2/test2-1'),
-    test2_2:() => import('@/views/test/test2/test2-2'),
+    role:() => import('@/views/set/Role'),
+    menu:() => import('@/views/set/Menu'),
+    permission:() => import('@/views/set/Permission'),
+    www:() => import('@/views/set/WWW'),
+    banner:() => import('@/views/set/WWW/Banner'),
+    instagram:() => import('@/views/set/WWW/Instagram'),
 }
 
 export default mapRoutes;

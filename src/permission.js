@@ -19,7 +19,7 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken()
-
+  
   if (hasToken) {
     // 已登录 获取权限
     if (!store.state.permission.permissionList) {

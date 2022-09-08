@@ -10,6 +10,14 @@
           ></el-input>
         </el-form-item>
 
+        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="name">
+          <el-input
+            v-model="form.email"
+            autocomplete="off"
+            placeholder="请输入邮箱地址"
+          ></el-input>
+        </el-form-item>
+
         <el-form-item label="头像" :label-width="formLabelWidth" prop="avatar">
           <el-upload
             class="avatar-uploader"
@@ -87,6 +95,7 @@ export default {
     return {
       dialogFormVisible: false,
       form: {
+        email: "",
         avatar: "",
         desc: "",
         email_verified_time: "",
@@ -131,14 +140,12 @@ export default {
           { required: true, message: "请输入用户名称", trigger: "blur" },
           { max: 100, message: "长度在 100 个字符以内", trigger: "blur" },
         ],
-        avatar: [
-          { required: true, message: "请上传用户头像", trigger: "change" },
-        ],
-        status: [
+        email: [
+          { required: true, message: "请输入邮箱地址", trigger: "blur" },
           {
-            required: true,
-            message: "请至少选择一个用户状态",
-            trigger: "change",
+            type: "email",
+            message: "请输入正确的邮箱地址",
+            trigger: ["blur", "change"],
           },
         ],
       },
