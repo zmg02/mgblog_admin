@@ -9,7 +9,7 @@ export const reqPutArticle = (id, data) => request({ url: `/admin/v1/articles/${
 // 删除文章实例
 export const reqDelArticle = (id) => request({ url: `/admin/v1/articles/${id}`, method: 'delete' });
 // 获取作者
-export const reqGetAuthors = () => request({ url: `/admin/v1/user/authors`, method: 'get' });
+export const reqGetAuthors = () => request({ url: `/admin/v1/users/authors`, method: 'get' });
 // 创建文章实例
 export const reqPostArticle = (data) => request({ url: `/admin/v1/articles`, data, method: 'post' });
 

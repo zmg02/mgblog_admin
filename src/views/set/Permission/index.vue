@@ -135,15 +135,28 @@ export default {
       this.h2Type = 'edit';
       this.permissionInfo = {...data};
     },
-    async remove(node, data) {
-      let result = await this.$API.permission.reqDelPermission(data.id);
-      if (result.code == 200) {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
+    remove(node, data) {
+      this.$confirm(`确定删除${data.name}？`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          let result = await this.$API.permission.reqDelPermission(data.id);
+          if (result.code == 200) {
+            this.$message({
+              type: "success",
+              message: "删除成功！",
+            });
+            this.getData();
+          }
         })
-        this.getData();
-      }
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     filterNode(value, data) {
       if (!value) return true;

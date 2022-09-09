@@ -242,15 +242,28 @@ export default {
       this.info = { ...row };
       this.createDialogVisible = true;
     },
-    async remove(row) {
-      let result = await this.$API.role.reqDelRole(row.id);
-      if (result.code == 200) {
-        this.getData();
-        this.$message({
-          type: "success",
-          message: "删除成功",
+    remove(row) {
+      this.$confirm(`确定删除${row.name}？`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          let result = await this.$API.role.reqDelRole(row.id);
+          if (result.code == 200) {
+            this.$message({
+              type: "success",
+              message: "删除成功！",
+            });
+            this.getData();
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
         });
-      }
     },
     show_permission(row) {
       this.showType = 'permission';

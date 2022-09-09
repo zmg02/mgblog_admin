@@ -170,16 +170,28 @@ export default {
       this.h2Type = 'edit';
       this.menuInfo = {...data};
     },
-    async remove(node, data) {
-      console.log(data)
-      let result = await this.$API.menu.reqDelMenu(data.id);
-      if (result.code == 200) {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
+    remove(node, data) {
+      this.$confirm(`确定删除${data.title}？`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          let result = await this.$API.menu.reqDelMenu(data.id);
+          if (result.code == 200) {
+            this.$message({
+              type: "success",
+              message: "删除成功！",
+            });
+            this.getData();
+          }
         })
-        this.getData();
-      }
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
       // const parent = node.parent;
       // const children = parent.data.children || parent.data;
       // const index = children.findIndex((d) => d.id === data.id);

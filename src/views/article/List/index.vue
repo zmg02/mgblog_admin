@@ -65,12 +65,7 @@
             <el-table-column type="selection" width="45" prop="prop">
             </el-table-column>
 
-            <el-table-column
-              label="主图"
-              width="88"
-              prop="prop"
-              align="center"
-            >
+            <el-table-column label="主图" width="88" prop="prop" align="center">
               <template slot-scope="{ row, $index }">
                 <el-image
                   style="width: 80"
@@ -110,10 +105,20 @@
               width="width"
             ></el-table-column>
 
+            <el-table-column
+              label="标签"
+              prop="tag"
+              width="width"
+            >
+            <template slot-scope="{ row }">
+              <el-tag type="success" effect="dark" v-for="tag in row.tag" :key="tag.id">{{tag.name}}</el-tag>
+            </template>
+          </el-table-column>
+
             <el-table-column label="状态" prop="prop" width="width">
               <template slot-scope="{ row }">
                 <span v-if="row.status == 1" class="normal">正常</span>
-                <span v-else class="delete">已删除</span>
+                <span v-else class="delete">删除</span>
               </template>
             </el-table-column>
 
@@ -129,28 +134,27 @@
             <el-table-column label="点赞" prop="praise_count" width="width">
             </el-table-column>
 
-            <el-table-column label="创建时间" prop="create_time" width="150">
-            </el-table-column>
+            <!-- <el-table-column label="创建时间" prop="create_time" width="150">
+            </el-table-column> -->
 
             <el-table-column
               label="操作"
-              width="310"
+              width="210"
               prop="prop"
               align="center"
             >
               <template slot-scope="{ row, $index }">
-                <el-button type="info" icon="el-icon-info" @click="preview(row)"
-                  >详情</el-button
-                >
-                <el-button type="warning" icon="el-icon-edit" @click="edit(row)"
-                  >修改</el-button
-                >
-                <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  @click="remove(row)"
-                  >删除</el-button
-                >
+                <el-tooltip class="item" effect="light" content="文章详情" placement="top">
+                  <el-button type="info" icon="el-icon-info" @click="preview(row)"></el-button>
+                </el-tooltip>
+
+                <el-tooltip class="item" effect="light" content="修改文章" placement="top">
+                  <el-button type="warning" icon="el-icon-edit" @click="edit(row)"></el-button>
+                </el-tooltip>
+
+                <el-tooltip class="item" effect="light" content="删除文章" placement="top">
+                  <el-button type="danger" icon="el-icon-delete" @click="remove(row)" ></el-button>
+                </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
@@ -245,6 +249,27 @@
                 v-for="(value, index) in categories"
                 :key="value.id"
               ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item
+            label="标签"
+            :label-width="formLabelWidth"
+            prop="tag_id"
+          >
+          <!-- value-key="name" 作为 value 唯一标识的键名，绑定值为对象类型时必填 -->
+            <el-select
+              v-model="articleInfo.tag"
+              value-key="name"
+              multiple
+              collapse-tags
+              placeholder="请选择">
+              <el-option
+                v-for="item in tags"
+                :key="item.id"
+                :label="item.name"
+                :value="{id:item.id, name:item.name}">
+              </el-option>
             </el-select>
           </el-form-item>
 
@@ -348,7 +373,7 @@
               />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               <div slot="tip" class="el-upload__tip">
-                只能上传jpg/png文件，且不超过500kb
+                只能上传jpg/png文件，且不超过 3 Mb
               </div>
             </el-upload>
           </el-form-item>
@@ -373,6 +398,27 @@
                 v-for="(value, index) in categories"
                 :key="value.id"
               ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item
+            label="标签"
+            :label-width="formLabelWidth"
+            prop="tag"
+          >
+          <!-- value-key="name" 作为 value 唯一标识的键名，绑定值为对象类型时必填 -->
+            <el-select
+              v-model="newArticle.tag"
+              value-key="name"
+              multiple
+              collapse-tags
+              placeholder="请选择">
+              <el-option
+                v-for="item in tags"
+                :key="item.id"
+                :label="item.name"
+                :value="{id:item.id, name:item.name}">
+              </el-option>
             </el-select>
           </el-form-item>
 
@@ -426,6 +472,7 @@ export default {
       },
       status: ["已删除", "正常"],
       categories: [],
+      tags: [],
       authors: [],
       articleList: {},
       // 选中内容
@@ -440,6 +487,7 @@ export default {
         default_img: "",
         content: "",
         category_id: "",
+        tag: [],
         status: 1,
         order: 0,
       },
@@ -477,6 +525,13 @@ export default {
         this.categories = result.data;
       }
     },
+    // 获取标签
+    async getTags() {
+      let result = await this.$API.tag.reqGetTags();
+      if (result.code == 200) {
+        this.tags = result.data;
+      }
+    },
     // 获取作者
     async getAuthors() {
       let result = await this.$API.article.reqGetAuthors();
@@ -486,6 +541,7 @@ export default {
     },
     // 获取文章列表
     async getData() {
+      Object.assign(this.params, this.$route.query);
       let result = await this.$API.article.reqGetArticleList(this.params);
       if (result.code == 200) {
         this.articleList = result.data;
@@ -541,14 +597,16 @@ export default {
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 3;
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+      const isPNG = file.type === "image/png";
+      const isLt3M = file.size / 1024 / 1024 < 3;
+
+      if (!isJPG && !isPNG) {
+        this.$message.error("上传头像图片只能是 JPG/PNG 格式!");
       }
-      if (!isLt2M) {
+      if (!isLt3M) {
         this.$message.error("上传头像图片大小不能超过 3MB!");
       }
-      return isJPG && isLt2M;
+      return (isJPG || isPNG) && isLt3M;
     },
     // 删除
     remove(row) {
@@ -629,6 +687,7 @@ export default {
   },
   mounted() {
     this.getCategories();
+    this.getTags();
     this.getData();
   },
   components: { Info },
