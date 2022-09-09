@@ -12,14 +12,11 @@ export const reqRefreshToken = () => request({ url: '/admin/v1/refresh', method:
 export const reqGetInfo = () => request({ url: '/admin/v1/me', method: 'post' });
 // 退出登录
 export const reqLogout = () => request({ url: '/admin/v1/logout', method: 'post' });
+
 // 获取用户状态列表
 export const reqUserStatus = () => request({ url: '/admin/v1/users/status', method: 'get' });
 // 获取用户列表
-export const reqUserList = (params) => request({
-    url: '/admin/v1/users',
-    params,
-    method: 'get'
-});
+export const reqUserList = (params) => request({ url: '/admin/v1/users', params, method: 'get' });
 // 修改用户信息
 export const reqPostUser = (data) => request({ url: `/admin/v1/users`, data, method: 'post' });
 // 修改用户信息
@@ -34,6 +31,7 @@ export const reqBlacklist = (data) => request({ url: '/admin/v1/users/blacklist'
 export const reqDestroy = (data) => request({ url: '/admin/v1/users/destroy_selected', data, method: 'patch' });
 // 上传头像
 export const reqUpload = (data) => request({ url: '/admin/v1/users/upload', data, method: 'post' });
+
 
 /**
  * 用户权限

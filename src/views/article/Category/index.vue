@@ -25,7 +25,11 @@
 
           <el-table-column prop="prop" label="文章数" width="width">
             <template slot-scope="{ row }">
-              <a href="#">{{ row.count }}</a>
+              <el-tag type="success" effect="dark">
+                <router-link :to="`/article/list?category_id=${row.id}`">{{
+                  row.count
+                }}</router-link>
+              </el-tag>
             </template>
           </el-table-column>
 
@@ -60,7 +64,7 @@
       <el-dialog
         :title="categoryInfo.id ? '修改分类' : '创建分类'"
         :visible.sync="createDialogVisible"
-        @close='close'
+        @close="close"
         width="30%"
       >
         <!-- v-if="createDialogVisible"
@@ -173,8 +177,8 @@ export default {
           }
         } else {
           this.$message({
-            type: 'error',
-            message: '提交错误!!'
+            type: "error",
+            message: "提交错误!!",
           });
         }
       });
@@ -182,22 +186,35 @@ export default {
     close() {
       this.createDialogVisible = false;
       this.categoryInfo = {};
-      this.$refs["ruleForm"].resetFields();//重置表单
+      this.$refs["ruleForm"].resetFields(); //重置表单
       // this.$refs.ruleForm.clearValidate(); //清除验证规则
     },
     edit(row) {
       this.categoryInfo = { ...row };
       this.createDialogVisible = true;
     },
-    async remove(row) {
-      let result = await this.$API.article.reqDelArticleCategory(row.id);
-      if (result.code == 200) {
-        this.getData();
-        this.$message({
-          type: "success",
-          message: "删除成功",
+    remove(row) {
+      this.$confirm(`确定删除${row.name}？`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          let result = await this.$API.article.reqDelArticleCategory(row.id);
+          if (result.code == 200) {
+            this.$message({
+              type: "success",
+              message: "删除成功！",
+            });
+            this.getData();
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
         });
-      }
     },
   },
   mounted() {

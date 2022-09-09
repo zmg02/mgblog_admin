@@ -7,6 +7,7 @@ const mapRoutes = {
     admin:() => import('@/views/member/Admin'),
     article:() => import('@/views/article/List'),
     category:() => import('@/views/article/Category'),
+    tag:() => import('@/views/article/Tag'),
     role:() => import('@/views/set/Role'),
     menu:() => import('@/views/set/Menu'),
     permission:() => import('@/views/set/Permission'),
