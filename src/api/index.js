@@ -5,6 +5,7 @@ import * as menu from './menu'
 import * as permission from './permission'
 import * as www from './www'
 import * as tag from './tag'
+import * as instagram from './instagram'
 
 export default {
     user,
@@ -14,4 +15,5 @@ export default {
     permission,
     www,
     tag,
+    instagram,
 }

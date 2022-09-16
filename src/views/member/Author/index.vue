@@ -218,6 +218,10 @@ export default {
     },
     // 自定义事件
     editOk() {
+      this.$message({
+        type: 'success',
+        message: '修改成功'
+      });
       this.getData();
     },
     // 删除单个用户

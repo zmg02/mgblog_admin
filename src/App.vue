@@ -11,6 +11,9 @@ export default {
 </script>
 
 <style>
+ul li {
+  list-style: none;
+}
 .card {
   margin-bottom: 20px;
 }
@@ -36,5 +39,8 @@ export default {
 .mg-pagination {
   text-align: center;
   margin: 30px 0 50px;
+}
+.mg-tag {
+  margin: 2px;
 }
 </style>

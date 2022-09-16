@@ -25,11 +25,9 @@
 
           <el-table-column prop="prop" label="文章数" width="width">
             <template slot-scope="{ row }">
-              <el-tag type="success" effect="dark">
-                <router-link :to="`/article/list?category_id=${row.id}`">{{
-                  row.count
-                }}</router-link>
-              </el-tag>
+                <router-link :to="`/article/list?category_id=${row.id}`">
+                  <el-tag type="success" effect="dark">{{row.count}}</el-tag>
+                </router-link>
             </template>
           </el-table-column>
 

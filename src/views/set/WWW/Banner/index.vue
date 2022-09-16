@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card>
+    <el-card class="card">
       <el-row>
         <el-col :span="12">
           <el-form :inline="true" class="demo-form-inline" :model="params">
@@ -71,7 +71,7 @@
 
         <el-table-column label="分类" prop="prop" width="150">
           <template slot-scope="{ row }">
-            <el-tag type="success" effect="dark">
+            <el-tag type="success">
               {{ row.article.category.name }}
             </el-tag>
           </template>

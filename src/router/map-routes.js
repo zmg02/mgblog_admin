@@ -14,6 +14,7 @@ const mapRoutes = {
     www:() => import('@/views/set/WWW'),
     banner:() => import('@/views/set/WWW/Banner'),
     instagram:() => import('@/views/set/WWW/Instagram'),
+    comment:() => import('@/views/article/Comment'),
 }
 
 export default mapRoutes;

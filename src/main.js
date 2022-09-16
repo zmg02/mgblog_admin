@@ -45,6 +45,9 @@ import SelectTree from '@/components/SelectTree'
 Vue.component(Pagination.name, Pagination);
 Vue.component(Tinymce.name, Tinymce);
 Vue.component(SelectTree.name, SelectTree);
+// 瀑布流
+import vueWaterfallEasy from 'vue-waterfall-easy'
+Vue.component(vueWaterfallEasy.name, vueWaterfallEasy);
 
 new Vue({
   el: '#app',
