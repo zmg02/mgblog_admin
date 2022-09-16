@@ -119,6 +119,13 @@
               </el-select>
             </el-form-item>
 
+            <el-form-item label="隐藏" :label-width="formLabelWidth">
+              <el-select v-model="menuInfo.hidden" placeholder="">
+                <el-option label="隐藏" :value="1">隐藏</el-option>
+                <el-option label="显示" :value="0">显示</el-option>
+              </el-select>
+            </el-form-item>
+
             <el-form-item :label-width="formLabelWidth">
               <el-button type="primary" icon="el-icon-upload2" @click="saveForm"
                 >提 交</el-button>
@@ -154,6 +161,7 @@ export default {
         uri: "",
         status: 1,
         order: "",
+        hidden: 0,
       },
       menuId: 0,
       h2Type: 'create',

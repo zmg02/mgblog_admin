@@ -185,10 +185,7 @@
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload"
                 >
-                  <img
-                    v-if="userForm.avatar"
-                    :src="userForm.avatar"
-                  />
+                  <img v-if="userForm.avatar" :src="userForm.avatar" />
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                   <div slot="tip" class="el-upload__tip">
                     只能上传jpg/png文件，且不超过2 Mb
@@ -316,8 +313,13 @@ export default {
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" },
-        ]
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur",
+          },
+        ],
       },
       formLabelWidth: "120px",
     };
@@ -404,14 +406,18 @@ export default {
         if (valid) {
           let result = await this.$API.user.reqPostUser(this.userForm);
           if (result.code == 200) {
+            this.$message({
+              type: "success",
+              message: "保存成功",
+            });
             this.getData();
           }
           this.dialogFormVisible = false;
         } else {
           this.$message({
-            type: 'error',
-            message: '提交出错了!!'
-          })
+            type: "error",
+            message: "提交出错了!!",
+          });
         }
       });
     },
@@ -427,6 +433,10 @@ export default {
     },
     // 自定义事件
     editOk() {
+      this.$message({
+        type: "success",
+        message: "修改成功",
+      });
       this.getData();
     },
     // 删除单个用户

@@ -1,6 +1,7 @@
 <template>
   <div>
     <div v-if="showType == 'table'">
+      <!-- 搜索 -->
       <el-card class="card">
         <el-row>
           <el-col :span="18">
@@ -56,6 +57,7 @@
 
       <el-card>
         <div>
+          <!-- 表格 -->
           <el-table
             ref="multipleTable"
             :data="articleList.data"
@@ -105,15 +107,17 @@
               width="width"
             ></el-table-column>
 
-            <el-table-column
-              label="标签"
-              prop="tag"
-              width="width"
-            >
-            <template slot-scope="{ row }">
-              <el-tag type="success" effect="dark" v-for="tag in row.tag" :key="tag.id">{{tag.name}}</el-tag>
-            </template>
-          </el-table-column>
+            <el-table-column label="标签" prop="tag" width="width">
+              <template slot-scope="{ row }">
+                <el-tag
+                  class="mg-tag"
+                  type="success"
+                  v-for="tag in row.tag"
+                  :key="tag.id"
+                  >{{ tag.name }}
+                </el-tag>
+              </template>
+            </el-table-column>
 
             <el-table-column label="状态" prop="prop" width="width">
               <template slot-scope="{ row }">
@@ -124,18 +128,14 @@
 
             <el-table-column label="评论" prop="prop" width="width">
               <template slot-scope="{ row }">
-                <a href="" v-if="row.comment_count > 0">{{
-                  row.comment_count
-                }}</a>
-                <span v-else>{{ row.comment_count }}</span>
+                <router-link :to="{name: 'Comment', query: {'article_id': row.id}}">
+                  <el-tag type="success" effect="dark">{{ row.comment_count }}</el-tag>
+                </router-link>
               </template>
             </el-table-column>
 
             <el-table-column label="点赞" prop="praise_count" width="width">
             </el-table-column>
-
-            <!-- <el-table-column label="创建时间" prop="create_time" width="150">
-            </el-table-column> -->
 
             <el-table-column
               label="操作"
@@ -144,21 +144,49 @@
               align="center"
             >
               <template slot-scope="{ row, $index }">
-                <el-tooltip class="item" effect="light" content="文章详情" placement="top">
-                  <el-button type="info" icon="el-icon-info" @click="preview(row)"></el-button>
+                <el-tooltip
+                  class="item"
+                  effect="light"
+                  content="文章详情"
+                  placement="top"
+                >
+                  <el-button
+                    type="info"
+                    icon="el-icon-info"
+                    @click="preview(row)"
+                  ></el-button>
                 </el-tooltip>
 
-                <el-tooltip class="item" effect="light" content="修改文章" placement="top">
-                  <el-button type="warning" icon="el-icon-edit" @click="edit(row)"></el-button>
+                <el-tooltip
+                  class="item"
+                  effect="light"
+                  content="修改文章"
+                  placement="top"
+                >
+                  <el-button
+                    type="warning"
+                    icon="el-icon-edit"
+                    @click="edit(row)"
+                  ></el-button>
                 </el-tooltip>
 
-                <el-tooltip class="item" effect="light" content="删除文章" placement="top">
-                  <el-button type="danger" icon="el-icon-delete" @click="remove(row)" ></el-button>
+                <el-tooltip
+                  class="item"
+                  effect="light"
+                  content="删除文章"
+                  placement="top"
+                >
+                  <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    @click="remove(row)"
+                  ></el-button>
                 </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
 
+          <!-- 翻页 -->
           <div class="mg-pagination">
             <el-pagination
               background
@@ -176,6 +204,7 @@
       </el-card>
     </div>
 
+    <!-- 修改文章 -->
     <div v-else-if="showType == 'edit'">
       <el-card class="card">
         <el-row>
@@ -257,18 +286,20 @@
             :label-width="formLabelWidth"
             prop="tag_id"
           >
-          <!-- value-key="name" 作为 value 唯一标识的键名，绑定值为对象类型时必填 -->
+            <!-- value-key="name" 作为 value 唯一标识的键名，绑定值为对象类型时必填 -->
             <el-select
               v-model="articleInfo.tag"
               value-key="name"
               multiple
               collapse-tags
-              placeholder="请选择">
+              placeholder="请选择"
+            >
               <el-option
                 v-for="item in tags"
                 :key="item.id"
                 :label="item.name"
-                :value="{id:item.id, name:item.name}">
+                :value="{ id: item.id, name: item.name }"
+              >
               </el-option>
             </el-select>
           </el-form-item>
@@ -314,6 +345,7 @@
       </el-card>
     </div>
 
+    <!-- 创建文章 -->
     <div v-else-if="showType == 'new'">
       <el-card class="card">
         <el-row>
@@ -401,23 +433,21 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item
-            label="标签"
-            :label-width="formLabelWidth"
-            prop="tag"
-          >
-          <!-- value-key="name" 作为 value 唯一标识的键名，绑定值为对象类型时必填 -->
+          <el-form-item label="标签" :label-width="formLabelWidth" prop="tag">
+            <!-- value-key="name" 作为 value 唯一标识的键名，绑定值为对象类型时必填 -->
             <el-select
               v-model="newArticle.tag"
               value-key="name"
               multiple
               collapse-tags
-              placeholder="请选择">
+              placeholder="请选择"
+            >
               <el-option
                 v-for="item in tags"
                 :key="item.id"
                 :label="item.name"
-                :value="{id:item.id, name:item.name}">
+                :value="{ id: item.id, name: item.name }"
+              >
               </el-option>
             </el-select>
           </el-form-item>
@@ -454,6 +484,7 @@
       </el-card>
     </div>
 
+    <!-- 文章详情 -->
     <Info :info="articleInfo" />
   </div>
 </template>
