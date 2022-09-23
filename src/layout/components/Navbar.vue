@@ -14,12 +14,16 @@
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              Home
+              首页
             </el-dropdown-item>
           </router-link>
 
+          <el-dropdown-item>
+            <el-link target="_blank" :href="wwwUrl" :underline="false">前台</el-link>
+          </el-dropdown-item>
+
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">登出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -33,6 +37,11 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
 export default {
+  data() {
+    return {
+      wwwUrl: 'http://www.zmg2022.cn/#/'
+    }
+  },
   components: {
     Breadcrumb,
     Hamburger
