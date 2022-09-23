@@ -7,7 +7,7 @@
             <el-form-item label="">
               <el-input
                 v-model="params.keywords"
-                placeholder="关键词"
+                placeholder="请输入关键词"
               ></el-input>
             </el-form-item>
 

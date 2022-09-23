@@ -26,6 +26,9 @@ ul li {
 .warning {
   color: #e6a23c;
 }
+.info {
+  color: #909399;
+}
 .delete {
   color: #f56c6c;
 }

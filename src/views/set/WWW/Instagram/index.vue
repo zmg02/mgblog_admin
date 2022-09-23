@@ -7,8 +7,15 @@
             <el-form-item label="">
               <el-input
                 v-model="params.keywords"
-                placeholder="关键词"
+                placeholder="请输入关键词"
               ></el-input>
+            </el-form-item>
+
+            <el-form-item label="">
+              <el-select v-model="params.status" placeholder="请选择状态">
+                <el-option label="" value="">所有</el-option>
+                <el-option :label="value" :value="index" v-for="(value, index) in status" :key="index"></el-option>
+              </el-select>
             </el-form-item>
 
             <el-form-item label="">
@@ -87,46 +94,119 @@
     </el-card>
 
     <el-card>
-      <div class="infinite-list-wrapper" style="overflow: auto">
+      <section>
+        <!-- @click="clickImage(index)" -->
         <div
-          class="photo_list"
-          v-infinite-scroll="handleCurrentChange"
-          :infinite-scroll-disabled="disabled"
+          class="img-wrapper"
+          v-for="(item, index) in imgsArr"
+          :key="index"
         >
-          <div class="photo_item" v-for="item in imgsArr" :key="item.id">
+          <div class="img" :style="'backgroundImage: url(' + item.url + ');'">
             <el-image
               class="photo_img"
               :src="item.url"
               :preview-src-list="srcList"
-              fit="cover"
               lazy
             >
               <!-- 加载中 -->
               <div slot="placeholder" class="image-slot">
-                加载中<span class="dot">...</span>
+                <img src="~@/assets/img/loading1.gif" class="loading" />
+                <img src="~@/assets/img/error1.jpg" class="error" />
               </div>
               <!-- 加载失败 -->
               <div slot="error" class="image-slot">
+                <!-- <img src="~@/assets/img/error1.jpg" /> -->
                 <i class="el-icon-picture-outline"></i>
               </div>
             </el-image>
-            <span class="photo_text">
+          </div>
+          <div class="info">
+            <span class="info_tag">
               <el-tag type="" class="tag" v-for="t in item.tag" :key="t.id">{{t.name}}</el-tag>
             </span>
-            <!-- <span>{{item}}</span> -->
           </div>
-
-          <img src="" :style="{ 'flex-grow': 999 }" />
+          <span class="set">
+            <el-button @click="setImg(item)" size="mini">设置</el-button>
+          </span>
+          <span class="status">
+            <span v-if="item.status == 0">
+              <el-badge value="删除" class="item"></el-badge>
+            </span>
+            <span v-if="item.status == 1">
+              <el-badge value="正常" class="item" type="primary"></el-badge>
+            </span>
+            <span v-if="item.status >= 2 && item.status <= 3">
+              <el-badge value="待定" class="item" type="info"></el-badge>
+            </span>
+            <span v-if="item.status >= 4">
+              <el-badge value="拒绝" class="item" type="warning"></el-badge>
+            </span>
+          </span>
         </div>
-        <p v-if="loading" class="footer-text">加载中...</p>
-        <p v-if="noMore" class="footer-text">没有更多了！</p>
-      </div>
+      </section>
+
+      <div v-if="noMore" style="text-align: center;">没有更多了！</div>
+
+      <el-dialog
+        title="图片设置"
+        :visible.sync="imgDialogVisible"
+        width="30%"
+        center
+        @close="cancelSet"
+      >
+        <span>
+          <el-form :model="imgInfo" ref="setForm" style="text-align: center;">
+            <el-form-item label="标签" label-width="120px" prop="tag">
+              <el-select
+                v-model="imgInfo.tag"
+                value-key="name"
+                multiple
+                collapse-tags
+                placeholder="请选择标签"
+              >
+                <el-option
+                  v-for="item in tags"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="{ id: item.id, name: item.name }"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="状态" label-width="120px" prop="status">
+              <el-select
+                v-model="imgInfo.status"
+                placeholder="请选择状态"
+              >
+                <el-option
+                  v-for="(value, index) in status"
+                  :key="index"
+                  :label="value"
+                  :value="index"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="排序" label-width="120px" prop="order">
+              <el-input class="input_order" v-model="imgInfo.order" placeholder="请输入排序"></el-input>
+            </el-form-item>
+          </el-form>
+        </span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="cancelSet">取 消</el-button>
+          <el-button type="primary" @click="setConfirm">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-card>
   </div>
 </template>
 
 <script>
 import { getToken } from "@/utils/auth";
+// 滚动加载节流
+import throttle from "lodash/throttle";
 
 export default {
   data() {
@@ -141,13 +221,12 @@ export default {
       last_page: 0,
       params: {
         page: 1,
-        per_page: 20,
+        per_page: 50,
         keywords: "",
+        status: "",
       },
       token: "",
-      loading: false,
-      screenWidth: null,
-      imgWidth: null,
+      noMore: false,
       // 图片上传
       limit: 5,
       fileList: [],
@@ -157,25 +236,23 @@ export default {
         tags: [{ required: true, message: "请选择标签", trigger: "change" }],
         files: [{ required: true, message: "请上传图片", trigger: "change" }],
       },
+      // 图片设置
+      imgInfo: {},
+      imgDialogVisible: false,
+      status: [],
     };
   },
   computed: {
-    noMore() {
-      return this.params.page >= this.last_page;
-    },
-    disabled() {
-      return this.loading || this.noMore;
-    },
     // upload 额外参数-后台获取数据[Object Object]处理
     uploadParams() {
       return { tags: JSON.stringify(this.uploadData.tags) };
     },
   },
   methods: {
-    async getData(type) {
+    async getData(type = '') {
       let result = await this.$API.instagram.reqGetInstagramList(this.params);
       if (result.code == 200) {
-        if (type == 'search') {
+        if (type == "search" || type == "refresh") {
           this.imgsArr = result.data.list.data;
           this.srcList = result.data.srcList;
         } else {
@@ -183,7 +260,6 @@ export default {
           this.srcList = this.srcList.concat(result.data.srcList);
         }
         this.last_page = result.data.list.last_page;
-        this.loading = false;
       }
     },
     async getTags() {
@@ -192,18 +268,37 @@ export default {
         this.tags = result.data;
       }
     },
-    // 翻页
-    handleCurrentChange() {
-      this.loading = true;
-      setTimeout(() => {
-        this.params.page++;
-        this.getData();
-      }, 2000);
+    async getStatus() {
+      let result = await this.$API.instagram.reqInstagramStatus();
+      if (result.code == 200) {
+        this.status = result.data;
+      }
     },
+    //  页面滚动事件  常做下拉加载内容 防抖 节流
+    pageScroll: throttle(function () {
+      // 获取滚动的距离
+      let scrollTop = document.documentElement.scrollTop;
+      // 获取滚动的高度（获取整个html的高度）
+      let scrollHeight = document.documentElement.scrollHeight;
+      // 获取屏幕(浏览器)高度
+      let clienHeight = document.documentElement.clientHeight;
+      // 滚动的距离 + 屏幕高度 - 内容高度 >= 0 表示滚动到底部了      (下拉加载判断条件)
+
+      if(scrollHeight-(scrollTop+clienHeight) <= 228){
+        if (this.params.page < this.last_page) {
+          //滚动至底部后请求数据
+          this.params.page++;
+          this.getData();
+        } else {
+          this.noMore = true;
+          return false;
+        }
+      }
+    }, 1000),
     // 图片搜索
     search() {
       this.params.page = 1;
-      this.getData('search');
+      this.getData("search");
     },
     // 上传图片
     uploadDialog() {
@@ -217,7 +312,8 @@ export default {
       });
     },
     handleChange(file, fileList) {
-      if (file.name && file.status != 'success') {
+      // 排除上传成功的钩子
+      if (file.name && file.status != "success") {
         this.uploadData.files.push(file.name);
       }
     },
@@ -275,40 +371,110 @@ export default {
       // 重置表单
       this.$refs.ruleForm.resetFields();
     },
+    // 图片设置
+    setImg(img) {
+      // 浅拷贝，不影响原始数据
+      this.imgInfo = {...img};
+      this.imgDialogVisible = true;
+    },
+    cancelSet() {
+      this.imgInfo = {};
+      // 关闭弹窗
+      this.imgDialogVisible = false;
+      // 重置表单
+      this.$refs.setForm.resetFields();
+    },
+    async setConfirm() {
+      let result = await this.$API.instagram.reqSetInstagram(this.imgInfo.id, this.imgInfo);
+      if (result.code == 200) {
+        this.imgInfo = {};
+        // 关闭弹窗
+        this.imgDialogVisible = false;
+        // 重置表单
+        this.$refs.setForm.resetFields();
+        this.$message({
+          type: 'success',
+          message: '设置成功！'
+        });
+        this.getData('refresh');
+      }
+    }
   },
   created() {
     this.getData();
     this.getTags();
+    this.getStatus();
     this.token = "Bearer " + getToken();
+  },
+  mounted() {
+    // 监听页面滚动
+    window.onscroll = this.pageScroll;
   },
 };
 </script>
 
 <style scoped lang="less">
 // 瀑布流
-.infinite-list-wrapper {
-  height: calc(100vh - 300px);
-}
-.photo_list {
+section {
   display: flex;
   flex-wrap: wrap;
-  .photo_item {
-    height: 228px;
-    min-width: 200px;
+  padding: 15px 5px;
+  &::after {
+    content: "";
+    flex-grow: 99999;
+  }
+  .img-wrapper {
     flex-grow: 1;
-    object-fit: cover;
     margin: 5px;
+    position: relative;
+    overflow: hidden;
+    height: 228px;
     border: 1px solid #e6e6e6;
     border-radius: 5px;
-    .photo_text {
-      display: inline-block;
+    .img {
+      //   object-fit: cover;
+      background-size: cover;
+      background-position: center;
+      img {
+        // opacity: 0;
+        min-width: 100%;
+        height: 228px;
+      }
     }
-    .photo_img {
-      height: 228px;
-      border-radius: 5px;
-      width: 100%;
+    .info {
+      position: absolute;
+      bottom: 0px;
+      color: #ffffff;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.3);
+      line-height: 44px;
+      height: 0px;
+    }
+    .set {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+    }
+    .status {
+      position: absolute;
+      top: 10px;
+      left: 5px;
+    }
+    &:hover .info {
+      height: 44px;
+      transition: all 0.5s;
     }
   }
+}
+.error {
+  display: none;
+}
+/deep/ .el-image__inner {
+  opacity: 0;
+  // min-width: 100%;
+  min-width: 200px;
+  height: 228px;
 }
 // 预览
 /deep/ .el-image-viewer__mask {
@@ -319,17 +485,15 @@ export default {
   color: #fff;
 }
 .image-slot {
+  min-width: 200px;
   text-align: center;
   line-height: 228px;
 }
-.footer-text {
-  margin-top: 20px;
-  text-align: center;
-}
 .tag {
-  position: relative;
-  bottom: 40px;
   margin-left: 5px;
-  background-color:rgba(236,245,255,0.8);
+  background-color: rgba(236, 245, 255, 0.8);
+}
+.input_order {
+  width: 202px;
 }
 </style>

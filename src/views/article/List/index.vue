@@ -6,19 +6,19 @@
         <el-row>
           <el-col :span="18">
             <el-form :inline="true" class="demo-form-inline" :model="params">
-              <el-form-item label="关键词">
+              <el-form-item label="">
                 <el-input
                   v-model="params.keywords"
-                  placeholder="关键词"
+                  placeholder="请输入关键词"
                 ></el-input>
               </el-form-item>
 
-              <el-form-item label="文章分类">
+              <el-form-item label="">
                 <el-select
                   v-model="params.category_id"
                   placeholder="请选择文章分类"
                 >
-                  <el-option label="请选择文章分类" value=""></el-option>
+                  <el-option label="" value="">所有</el-option>
                   <el-option
                     :label="value.name"
                     :value="value.id"
@@ -28,9 +28,9 @@
                 </el-select>
               </el-form-item>
 
-              <el-form-item label="状态">
-                <el-select v-model="params.status" placeholder="请选择">
-                  <el-option label="请选择状态" value=""></el-option>
+              <el-form-item label="">
+                <el-select v-model="params.status" placeholder="请选择状态">
+                  <el-option label="" value="">所有</el-option>
                   <el-option
                     :label="value"
                     :value="index"
