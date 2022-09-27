@@ -44,7 +44,12 @@ module.exports = {
         // target: "http://api.mgblog.com",
         target: "http://api.zmg2022.cn",
         pathRewrite: { "^/dev-api": "" }
-      }
+      },
+      "api": {
+        target: "http://api.zmg2022.cn",
+        changeOrigin: true,
+        pathRewrite: { "^/api": ""}
+      },
     }
   },
   configureWebpack: {
