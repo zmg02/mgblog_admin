@@ -45,10 +45,10 @@ module.exports = {
         target: "http://api.zmg2022.cn",
         pathRewrite: { "^/dev-api": "" }
       },
-      "api": {
+      "/prod-api": {
         target: "http://api.zmg2022.cn",
         changeOrigin: true,
-        pathRewrite: { "^/api": ""}
+        pathRewrite: { "^/prod-api": ""}
       },
     }
   },
