@@ -50,6 +50,11 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: { "^/prod-api": ""}
       },
+      "/stage-api": {
+        target: "http://api.zmg2022.cn",
+        changeOrigin: true,
+        pathRewrite: { "^/stage-api": ""}
+      },
     }
   },
   configureWebpack: {
