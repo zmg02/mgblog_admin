@@ -185,7 +185,7 @@
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload"
                 >
-                  <img v-if="userForm.avatar" :src="userForm.avatar" />
+                  <img v-if="userForm.avatar" :src="userForm.avatar" class="avatar" />
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                   <div slot="tip" class="el-upload__tip">
                     只能上传jpg/png文件，且不超过2 Mb

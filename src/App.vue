@@ -17,6 +17,9 @@ ul li {
 .card {
   margin-bottom: 20px;
 }
+.avatar {
+  max-width: 200px;
+}
 .danger {
   color: #f56c6c;
 }

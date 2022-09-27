@@ -39,7 +39,7 @@
               </div>
               <!-- 内容 -->
               <div class="post-single-body">
-                <div v-html="info.content"></div>
+                <div v-html="info.content" class="post-content-html"></div>
               </div>
               <!-- 结尾 -->
               <div class="post-single-footer">
@@ -98,7 +98,7 @@ export default {
   padding: 30px;
   border-radius: 20px !important;
   margin-bottom: 30px;
-  margin-top: 30px;
+  // margin-top: 30px;
   box-shadow: 0 5px 20px 0 rgba(69, 67, 96, 0.1);
   .post-single-image {
     margin-bottom: 40px;
@@ -147,6 +147,11 @@ export default {
   // 内容
   .post-single-body {
     margin-top: 30px;
+    .post-content-html {
+      ::v-deep img {
+        max-width: 100% !important;
+      }
+    }
   }
   // 结尾
   .post-single-footer {
@@ -222,7 +227,7 @@ img {
 
 /* dialog */
 .dialog_content {
-  margin: 20px 0;
+  // margin: 20px 0;
   padding-bottom: 20px;
   border-bottom: 1px solid #eee;
 }
