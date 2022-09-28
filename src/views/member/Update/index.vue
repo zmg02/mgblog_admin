@@ -21,7 +21,7 @@
         <el-form-item label="头像" :label-width="formLabelWidth" prop="avatar">
           <el-upload
             class="avatar-uploader"
-            action="/dev-api/admin/v1/users/upload"
+            action="/prod-api/admin/v1/users/upload"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"

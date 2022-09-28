@@ -63,7 +63,7 @@
                 class="upload-demo"
                 :data="uploadParams"
                 :auto-upload="false"
-                action="/dev-api/admin/v1/instagrams/upload"
+                action="/prod-api/admin/v1/instagrams/upload"
                 :headers="{ Authorization: token }"
                 :before-remove="beforeRemove"
                 :on-remove="handleRemove"

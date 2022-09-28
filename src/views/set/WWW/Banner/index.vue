@@ -117,7 +117,7 @@
             >
               <el-upload
                 class="avatar-uploader"
-                action="/dev-api/admin/v1/banners/upload"
+                action="/prod-api/admin/v1/banners/upload"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"

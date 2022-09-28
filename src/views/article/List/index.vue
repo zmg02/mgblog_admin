@@ -241,7 +241,7 @@
           >
             <el-upload
               class="avatar-uploader"
-              action="/dev-api/admin/v1/articles/upload"
+              action="/prod-api/admin/v1/articles/upload"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
@@ -393,7 +393,7 @@
           >
             <el-upload
               class="avatar-uploader"
-              action="/dev-api/admin/v1/articles/upload"
+              action="/prod-api/admin/v1/articles/upload"
               :show-file-list="false"
               :on-success="handleArticleSuccess"
               :before-upload="beforeAvatarUpload"

@@ -22,7 +22,7 @@
         <el-col :span="12" style="text-align: right">
           <el-upload
             class="upload-demo"
-            action="/dev-api/admin/v1/instagrams/upload"
+            action="/prod-api/admin/v1/instagrams/upload"
             :headers="{ Authorization: token }"
             multiple
             :show-file-list="false"
