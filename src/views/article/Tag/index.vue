@@ -29,6 +29,16 @@
             </template>
           </el-table-column>
 
+          <el-table-column prop="prop" label="关联照片" width="width">
+            <template slot-scope="{ row }">
+              <router-link :to="`/set/www/instagram?tag=${row.id}`">
+                <el-tag type="success" effect="dark">{{
+                  row.article_count
+                }}</el-tag>
+              </router-link>
+            </template>
+          </el-table-column>
+
           <el-table-column prop="prop" label="状态" width="100">
             <template slot-scope="{ row }">
               <span v-if="row.status == 1" class="normal">正常</span>

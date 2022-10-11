@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div class="login-container" :style="'backgroundImage: url(' + backgroundImage + ');'">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
@@ -43,10 +43,6 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: admin</span>
-      </div>
 
     </el-form>
   </div>
@@ -83,7 +79,8 @@ export default {
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      backgroundImage: 'http://api.zmg2022.cn/storage/instagram/b423649cdd9fa2ed14f68abe98791cad.jpg',
     }
   },
   watch: {
@@ -128,8 +125,20 @@ export default {
           return false
         }
       })
-    }
-  }
+    },
+    async getSetting() {
+      let result = await this.$API.setting.reqGetSettingName({name: "admin_backgound_image"});
+      if (result.code == 200) {
+        let image = result.data.value;
+        if (image) {
+          this.backgroundImage = image;
+        }
+      }
+    },
+  },
+  created() {
+    this.getSetting()
+  },
 }
 </script>
 
@@ -149,7 +158,7 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
-  background-image: url('~@/assets/img/background01.jpg');
+  // background-image: url('~@/assets/img/background01.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

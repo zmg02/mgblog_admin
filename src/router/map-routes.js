@@ -8,6 +8,7 @@ const mapRoutes = {
     article:() => import('@/views/article/List'),
     category:() => import('@/views/article/Category'),
     tag:() => import('@/views/article/Tag'),
+    setting:() => import('@/views/set/Setting'),
     role:() => import('@/views/set/Role'),
     menu:() => import('@/views/set/Menu'),
     permission:() => import('@/views/set/Permission'),

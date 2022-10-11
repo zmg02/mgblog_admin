@@ -41,8 +41,8 @@ module.exports = {
     proxy: {
       //现在给为dev-api，是由.env.development文件夹决定的
       "/dev-api": {
-        // target: "http://api.mgblog.com",
-        target: "http://api.zmg2022.cn",
+        target: "http://api.mgblog.com",
+        // target: "http://api.zmg2022.cn",
         pathRewrite: { "^/dev-api": "" }
       },
       "/prod-api": {
